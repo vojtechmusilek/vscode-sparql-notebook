@@ -3,6 +3,7 @@ export interface SparqlAskResult {
 }
 
 export interface SparqlJsonResult {
+  _compact: boolean,
   head: {
     vars: string[];
   };

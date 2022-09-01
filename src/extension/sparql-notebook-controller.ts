@@ -69,9 +69,11 @@ export class SparqlNotebookController {
 
     // content type
     const contentType = queryResult.headers["content-type"].split(";")[0];
-    const data = queryResult.data;
+    let data = queryResult.data;
 
     if (contentType === "application/sparql-results+json") {
+      data._compact = this._getConfiguration("compactTablePresentation");
+
       if (data.hasOwnProperty("boolean")) {
         // sparql ask
         execution.replaceOutput([this._writeSparqlJsonResult(data)]);
@@ -146,8 +148,7 @@ export class SparqlNotebookController {
   }
 
   private _parseNamespacesAndFormatBindings(data: any, query: string): any {
-    const configuration = vscode.workspace.getConfiguration("sparqlbook");
-    const useNamespaces = configuration.get("useNamespaces");
+    const useNamespaces = this._getConfiguration("useNamespaces");
     if (!useNamespaces) {
       return data;
     }
@@ -180,6 +181,8 @@ export class SparqlNotebookController {
 
             if (newValue !== tripleVariable.value) {
               tripleVariable.value = newValue;
+              tripleVariable._prefix = namespace;
+              tripleVariable._valueWithoutPrefix = newValue.replace(/^.*:/, "");
               break;
             }
           }
@@ -194,5 +197,10 @@ export class SparqlNotebookController {
     return data;
   }
 
-  dispose() {}
+  private _getConfiguration(key: string): any {
+    const configuration = vscode.workspace.getConfiguration("sparqlbook");
+    return configuration.get(key);
+  }
+
+  dispose() { }
 }
