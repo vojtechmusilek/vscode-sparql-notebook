@@ -12,7 +12,7 @@ export const activate: ActivationFunction = () => ({
     if (outputItemJson.hasOwnProperty("boolean")) {
       render(<SparqlAskResultJson sparqlResult={outputItemJson} />, element);
     } else {
-      if (outputItemJson._compact) {
+      if (outputItemJson._settings.tableStyleV2) {
         render(<SparqlResultJsonCompact sparqlResult={outputItemJson} />, element);
       }
       else {
