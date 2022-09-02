@@ -72,16 +72,18 @@ export class SparqlNotebookController {
     let data = queryResult.data;
 
     if (contentType === "application/sparql-results+json") {
-      data._compact = this._getConfiguration("compactTablePresentation");
-
       if (data.hasOwnProperty("boolean")) {
         // sparql ask
         execution.replaceOutput([this._writeSparqlJsonResult(data)]);
       }
       else {
         // sparql select
-        const dataWithNamespaces = this._parseNamespacesAndFormatBindings(data, query);
-        execution.replaceOutput([this._writeSparqlJsonResult(dataWithNamespaces)]);
+        let dataWithPrefixes = null;
+        if (this._getConfiguration("useNamespaces")) {
+          const prefixes = this._parsePrefixes(query);
+          dataWithPrefixes = this._applyPrefixes(data, prefixes);
+        }
+        execution.replaceOutput([this._writeSparqlJsonResult(data, dataWithPrefixes)]);
       }
     } else if (contentType === "text/turtle") {
       // sparql construct
@@ -106,11 +108,16 @@ export class SparqlNotebookController {
     ]);
   }
 
-  private _writeSparqlJsonResult(resultJson: any): vscode.NotebookCellOutput {
+  private _writeSparqlJsonResult(resultJson: any, resultJsonForTable: any = null): vscode.NotebookCellOutput {
+    console.log({ resultJson, resultJsonForTable });
+    resultJsonForTable = resultJsonForTable ?? resultJson;
+    resultJsonForTable = this._addTableSettings(resultJsonForTable);
+
+    console.log({ resultJson, resultJsonForTable });
     return new vscode.NotebookCellOutput([
       this._writeJson(JSON.stringify(resultJson, null, "   ")),
       vscode.NotebookCellOutputItem.json(
-        resultJson,
+        resultJsonForTable,
         "application/sparql-results+json"
       ),
     ]);
@@ -127,6 +134,13 @@ export class SparqlNotebookController {
         message: error.message,
       }),
     ]);
+  }
+
+  private _addTableSettings(data: any) {
+    data._settings = {
+      tableStyleV2: this._getConfiguration("tableStyleV2")
+    };
+    return data;
   }
 
   private _getEndpointFromQuery(sparqlQuery: string): string | undefined {
@@ -147,24 +161,22 @@ export class SparqlNotebookController {
     return endpoints.shift();
   }
 
-  private _parseNamespacesAndFormatBindings(data: any, query: string): any {
-    const useNamespaces = this._getConfiguration("useNamespaces");
-    if (!useNamespaces) {
-      return data;
-    }
-
-    // get namespaces from prefixes in query
-    let namespaces: any = {};
+  private _parsePrefixes(query: string) {
+    let prefixes: any = {};
     let nsRegex = /[Pp][Rr][Ee][Ff][Ii][Xx] ([^:]*):[ ]*<([^>]*)>/g;
     var m: any = true;
     do {
       m = nsRegex.exec(query);
       if (m) {
-        namespaces[m[1]] = m[2];
+        prefixes[m[1]] = m[2];
       }
     } while (m);
+    return prefixes;
+  }
 
-    // format uri in triples using namespaces
+  private _applyPrefixes(dataIn: any, prefixes: any): any {
+    // create copy of data, so we dont modify the json 
+    let data = JSON.parse(JSON.stringify(dataIn));
     let bindings: any[] = data.results.bindings;
     bindings = bindings.map((triple) => {
       const variables = Object.keys(triple);
@@ -173,16 +185,14 @@ export class SparqlNotebookController {
         const tripleVariable = triple[variable];
 
         if (tripleVariable.type === "uri") {
-          for (const namespace of Object.keys(namespaces)) {
+          for (const prefix of Object.keys(prefixes)) {
             const newValue = tripleVariable.value.replace(
-              namespaces[namespace],
-              namespace + ":"
+              prefixes[prefix],
+              prefix + ":"
             );
 
             if (newValue !== tripleVariable.value) {
               tripleVariable.value = newValue;
-              tripleVariable._prefix = namespace;
-              tripleVariable._valueWithoutPrefix = newValue.replace(/^.*:/, "");
               break;
             }
           }

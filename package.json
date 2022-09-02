@@ -135,10 +135,10 @@
             "default": true,
             "description": "Format output using prefixes from query."
           },
-          "sparqlbook.compactTablePresentation": {
+          "sparqlbook.tableStyleV2": {
             "type": "boolean",
             "default": false,
-            "description": "Makes table more compact, good for working with large amount of data."
+            "description": "Second table style."
           }
         }
       }
