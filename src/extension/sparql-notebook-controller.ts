@@ -150,7 +150,8 @@ export class SparqlNotebookController {
     // create copy of data, so we dont modify the json 
     let data = JSON.parse(JSON.stringify(dataIn));
     data._settings = {
-      tableStyleV2: this._getConfiguration("tableStyleV2")
+      tableStyleV2: this._getConfiguration("tableStyleV2"),
+      tableShowLineNumbers: this._getConfiguration("tableShowLineNumbers")
     };
     return data;
   }

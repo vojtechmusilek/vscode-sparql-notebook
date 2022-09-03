@@ -51,6 +51,14 @@ body.vscode-light {
   overflow: hidden;
 }
 
+.book_linenum_col {
+  flex-shrink: 1;
+  min-width: 56px;
+  overflow: hidden;
+  border-right: 1px solid var(--table-inner-borders-color);
+  text-align: right;
+}
+
 .book_col:last-child {
   flex-grow: 1;
 }

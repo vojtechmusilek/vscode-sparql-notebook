@@ -139,6 +139,11 @@
             "type": "boolean",
             "default": false,
             "description": "Second table style."
+          },
+          "sparqlbook.tableShowLineNumbers": {
+            "type": "boolean",
+            "default": false,
+            "description": "Shows line numbers (only available with 'tableStyleV2: true')."
           }
         }
       }

@@ -8,6 +8,7 @@ export const SparqlResultJsonCompact: FunctionComponent<{
   sparqlResult: SparqlJsonResult;
 }> = ({ sparqlResult }) => (
   <div class='book_table'>
+    {generateLineNumbers(sparqlResult)}
     {sparqlResult.head.vars.map((heading: string) => (
       <div class='book_col'>
         <div class='book_header'>
@@ -22,6 +23,29 @@ export const SparqlResultJsonCompact: FunctionComponent<{
     ))}
   </div>
 );
+
+let rowIndexes: any = {};
+let rowIndex = 0;
+//blank space U+00a0
+const blankSpace = " ";
+
+
+
+function generateLineNumbers(sparqlResult: SparqlJsonResult) {
+  if (!sparqlResult._settings.tableShowLineNumbers) {
+    return;
+  }
+
+  let line = 1;
+  return <div class='book_linenum_col'>
+    <div class='book_header'>{blankSpace}</div>
+    {sparqlResult.results.bindings.map((binding: any) => (
+      <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} class={getRowClasses(binding)}>
+        {line++}
+      </div>
+    ))}
+  </div>
+}
 
 function onMouseEnter(item: any) {
   let test: HTMLCollectionOf<Element> = (document.getElementsByClassName(item.target.classList[1]) as HTMLCollectionOf<Element>);
@@ -39,9 +63,6 @@ function onMouseLeave(item: any) {
   }
 }
 
-let rowIndexes: any = {};
-let rowIndex = 0;
-
 function getRowClasses(input: string): string {
   const key = JSON.stringify(input);
   if (rowIndexes.hasOwnProperty(key)) {
@@ -55,8 +76,7 @@ function getRowClasses(input: string): string {
 
 function formatCell(member: any) {
   if (member === undefined) {
-    // blank space U+00a0
-    return <span> </span>
+    return <span>{blankSpace}</span>
   }
 
   const value = escapeValue(member.value);
