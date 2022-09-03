@@ -54,6 +54,11 @@ function getRowClasses(input: string): string {
 }
 
 function formatCell(member: any) {
+  if (member === undefined) {
+    // blank space U+00a0
+    return <span> </span>
+  }
+
   const value = escapeValue(member.value);
   const type = member.type;
 
