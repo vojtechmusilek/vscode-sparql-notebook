@@ -6,9 +6,9 @@ import { SparqlAskResult } from '../model/sparql-result-json.model';
 export const SparqlAskResultJsonCompact: FunctionComponent<{
   sparqlResult: SparqlAskResult;
 }> = ({ sparqlResult }) => (
-  <div class='dtable'>
-    <div class='dcol'>
-      <div class='dheader'>
+  <div class='book_table'>
+    <div class='book_col'>
+      <div class='book_header'>
         {sparqlResult.boolean ? 'yes' : 'no'}
       </div>
     </div>
