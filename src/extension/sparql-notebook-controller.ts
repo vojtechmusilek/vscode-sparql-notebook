@@ -94,6 +94,7 @@ export class SparqlNotebookController {
           const prefixes = this._parsePrefixes(query);
           dataWithPrefixes = this._applyPrefixes(data, prefixes);
         }
+        dataWithPrefixes = this._addTableSettings(dataWithPrefixes);
         execution.replaceOutput([this._writeSparqlJsonResult(data, dataWithPrefixes)]);
       }
     } else if (contentType === "text/turtle") {
@@ -122,11 +123,7 @@ export class SparqlNotebookController {
   }
 
   private _writeSparqlJsonResult(resultJson: any, resultJsonForTable: any = null): vscode.NotebookCellOutput {
-    console.log({ resultJson, resultJsonForTable });
     resultJsonForTable = resultJsonForTable ?? resultJson;
-    resultJsonForTable = this._addTableSettings(resultJsonForTable);
-
-    console.log({ resultJson, resultJsonForTable });
     return new vscode.NotebookCellOutput([
       this._writeJson(JSON.stringify(resultJson, null, "   ")),
       vscode.NotebookCellOutputItem.json(
