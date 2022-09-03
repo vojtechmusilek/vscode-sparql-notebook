@@ -7,10 +7,10 @@ import { SparqlJsonResult } from '../model/sparql-result-json.model';
 export const SparqlResultJsonCompact: FunctionComponent<{
   sparqlResult: SparqlJsonResult;
 }> = ({ sparqlResult }) => (
-  <div class="dtable">
+  <div class='book_table'>
     {sparqlResult.head.vars.map((heading: string) => (
-      <div class="dcol">
-        <div class="dheader">
+      <div class='book_col'>
+        <div class='book_header'>
           {heading}
         </div>
         {sparqlResult.results.bindings.map((binding: any) => (
@@ -27,7 +27,7 @@ function onMouseEnter(item: any) {
   let test: HTMLCollectionOf<Element> = (document.getElementsByClassName(item.target.classList[1]) as HTMLCollectionOf<Element>);
   for (let i = 0; i < test.length; i++) {
     const element = test.item(i);
-    element?.setAttribute("style", "background-color: #2A2A2C;")
+    element?.setAttribute("style", "background-color: var(--table-hover-color);")
   }
 }
 
@@ -45,7 +45,7 @@ let rowIndex = 0;
 function getRowClasses(input: string): string {
   const key = JSON.stringify(input);
   if (rowIndexes.hasOwnProperty(key)) {
-    return "dcell " + rowIndexes[key];
+    return "book_cell " + rowIndexes[key];
   }
 
   rowIndexes[key] = "gen_row_" + rowIndex;
@@ -63,14 +63,14 @@ function formatCell(member: any) {
   const type = member.type;
 
   if (type == "literal") {
-    return <span class='dliteral'>"{value}"</span>
+    return <span class='book_member_literal'>"{value}"</span>
   }
 
   if (value.startsWith("http")) {
-    return <span class='duri'>
-      <span class='monofont'>&lt;</span>
+    return <span class='book_member_uri'>
+      <span class='book_monofont'>&lt;</span>
       <u>{value}</u>
-      <span class='monofont'>&gt;</span>
+      <span class='book_monofont'>&gt;</span>
     </span>
   }
 
@@ -79,8 +79,8 @@ function formatCell(member: any) {
   const name = valueSplit[1]
 
   return <span>
-    <span class='dprefix'>{prefix}:</span>
-    <span class='dname'>{name}</span>
+    <span class='book_member_prefix'>{prefix}:</span>
+    <span class='book_member_name'>{name}</span>
   </span>
 }
 
