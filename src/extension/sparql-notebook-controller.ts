@@ -94,7 +94,6 @@ export class SparqlNotebookController {
           const prefixes = this._parsePrefixes(query);
           dataWithPrefixes = this._applyPrefixes(data, prefixes);
         }
-        dataWithPrefixes = this._addTableSettings(dataWithPrefixes);
         execution.replaceOutput([this._writeSparqlJsonResult(data, dataWithPrefixes)]);
       }
     } else if (contentType === "text/turtle") {
@@ -124,6 +123,7 @@ export class SparqlNotebookController {
 
   private _writeSparqlJsonResult(resultJson: any, resultJsonForTable: any = null): vscode.NotebookCellOutput {
     resultJsonForTable = resultJsonForTable ?? resultJson;
+    resultJsonForTable = this._addTableSettings(resultJsonForTable);
     return new vscode.NotebookCellOutput([
       this._writeJson(JSON.stringify(resultJson, null, "   ")),
       vscode.NotebookCellOutputItem.json(
@@ -146,7 +146,9 @@ export class SparqlNotebookController {
     ]);
   }
 
-  private _addTableSettings(data: any) {
+  private _addTableSettings(dataIn: any) {
+    // create copy of data, so we dont modify the json 
+    let data = JSON.parse(JSON.stringify(dataIn));
     data._settings = {
       tableStyleV2: this._getConfiguration("tableStyleV2")
     };
