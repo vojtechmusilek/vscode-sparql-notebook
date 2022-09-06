@@ -16,6 +16,7 @@ body.vscode-dark {
 
   --member-uri-color: #4ec9b0;
   --member-literal-color: #ce9178;
+  --member-literal-int-color: #b5cea8;
   --member-prefix-color: #569cd6;
   --member-name-color: #9cdcfe;
 
@@ -33,6 +34,7 @@ body.vscode-light {
 
   --member-uri-color: #267f99;
   --member-literal-color: #008000;
+  --member-literal-int-color: #098658;
   --member-prefix-color: #0000ff;
   --member-name-color: #001080;
 
@@ -89,6 +91,10 @@ body.vscode-light {
 
 .book_member_literal {
   color: var(--member-literal-color);
+}
+
+.book_member_literal_int {
+  color: var(--member-literal-int-color);
 }
 
 .book_member_prefix {

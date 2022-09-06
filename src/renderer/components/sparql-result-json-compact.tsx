@@ -83,6 +83,24 @@ function formatCell(member: any) {
   const type = member.type;
 
   if (type == "literal") {
+    if (member.hasOwnProperty("datatype")) {
+      const datatype = member.datatype.replace("http://www.w3.org/2001/XMLSchema#", "");
+
+      if (datatype == "integer") {
+        return <span class='book_member_literal_int'>{value}</span>
+      }
+      else {
+        return <span>
+          <span class='book_member_literal'>"{value}"</span>
+          <sup>
+            <span class='book_member_uri'>^^</span>
+            <span class='book_member_prefix'>xsd:</span>
+            <span class='book_member_name'>{datatype}</span>
+          </sup>
+        </span>
+      }
+    }
+
     return <span class='book_member_literal'>"{value}"</span>
   }
 
