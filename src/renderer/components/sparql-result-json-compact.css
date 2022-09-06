@@ -54,11 +54,13 @@ body.vscode-light {
 }
 
 .book_linenum_col {
-  flex-shrink: 1;
-  min-width: 56px;
-  overflow: hidden;
+  /* flex-shrink: 1; */
+  /* min-width: 56px; */
+  /* overflow: hidden; */
   border-right: 1px solid var(--table-inner-borders-color);
   text-align: right;
+  font-weight: 400;
+  color: #858585;
 }
 
 .book_col:last-child {
@@ -108,4 +110,9 @@ body.vscode-light {
 .book_monofont {
   font-family: "Cascadia Code", "Courier New", monospace;
   font-weight: 300;
+}
+
+.book_supfont {
+  font-size: smaller;
+  vertical-align: top;
 }

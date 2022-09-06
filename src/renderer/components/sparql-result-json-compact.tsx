@@ -59,7 +59,7 @@ function onMouseLeave(item: any) {
   let test: HTMLCollectionOf<Element> = (document.getElementsByClassName(item.target.classList[1]) as HTMLCollectionOf<Element>);
   for (let i = 0; i < test.length; i++) {
     const element = test.item(i);
-    element?.setAttribute("style", "")
+    element?.removeAttribute("style")
   }
 }
 
@@ -92,11 +92,11 @@ function formatCell(member: any) {
       else {
         return <span>
           <span class='book_member_literal'>"{value}"</span>
-          <sup>
+          <span class='book_supfont'>
             <span class='book_member_uri'>^^</span>
             <span class='book_member_prefix'>xsd:</span>
             <span class='book_member_name'>{datatype}</span>
-          </sup>
+          </span>
         </span>
       }
     }
