@@ -89,6 +89,9 @@ function formatCell(member: any) {
       if (datatype == "integer") {
         return <span class='book_member_literal_int'>{value}</span>
       }
+      else if (datatype == "boolean") {
+        return <span class='book_member_literal_bool'>{value}</span>
+      }
       else {
         return <span>
           <span class='book_member_literal'>"{value}"</span>
